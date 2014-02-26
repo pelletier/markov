@@ -11,6 +11,7 @@ import (
 	"math"
 	"math/rand"
 	"strings"
+	"time"
 )
 
 var amount int
@@ -52,7 +53,7 @@ func tokenizeTextFile(filename string, ch chan string) {
 
 // generate random numbers on demand and push them in a channel
 func randGen(ch chan float64) {
-	rand.Seed(31)
+	rand.Seed(time.Now().UTC().UnixNano())
 	for {
 		ch <- rand.Float64()
 	}
