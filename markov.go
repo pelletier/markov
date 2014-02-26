@@ -22,6 +22,9 @@ func init() {
 	flag.Parse()
 }
 
+
+
+// tokenization function on the file
 func split(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	advance, token, err = bufio.ScanWords(data, atEOF)
 	if advance > 0 {
@@ -30,6 +33,7 @@ func split(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	return
 }
 
+// tokenize the text file
 func tokenizeTextFile(filename string, ch chan string) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -46,17 +50,20 @@ func tokenizeTextFile(filename string, ch chan string) {
 	close(ch)
 }
 
+// generate random numbers on demand and push them in a channel
 func randGen(ch chan float64) {
 	rand.Seed(31)
 	for {
 		ch <- rand.Float64()
 	}
 }
+
+// return an integer in [0;max) from the generator
 func intfrom(ch chan float64, max int) int {
 	return int(math.Floor((<-ch) * float64(max)))
 }
 
-
+// pick a random neighbor from a markov node
 func pickRandom(markov map[string]map[string]int, key string, randChan chan float64) string {
 	nodes := markov[key]
 	keys := make([]string, 0, len(nodes))
@@ -76,6 +83,7 @@ func pickRandom(markov map[string]map[string]int, key string, randChan chan floa
 	}
 	return current_key
 }
+
 
 func main() {
 	randChan := make(chan float64, 10000)
